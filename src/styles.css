@@ -56,7 +56,6 @@ p{line-height:1.6; margin:.4rem 0}
   gap:clamp(12px,2.5vw,20px);
 }
 
-/* Controls */
 select{
   display:block;
   width:100%;
@@ -72,7 +71,6 @@ select{
   appearance:none;
 }
 
-/* City cards */
 .city{
   width:100%;
   max-width:720px;
@@ -87,26 +85,11 @@ select{
 .city .date{font-size:.95rem; color:var(--ink-soft)}
 .city .time{font-variant-numeric:tabular-nums; font-size:1.50rem; font-weight:700}
 
-.city:last-child {
-  border: none;
-}
+.city:last-child{border:none}
+.date{opacity:.7}
+.time{font-size:48px; font-weight:bold}
+.time small{font-size:16px; vertical-align:middle; line-height:48px}
 
-.date {
-  opacity: 0.7;
-}
-
-.time {
-  font-size: 48px;
-  font-weight: bold;
-}
-
-.time small {
-  font-size: 16px;
-  vertical-align: middle;
-  line-height: 48px;
-}
-
-/* Footer */
 footer .grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -146,3 +129,40 @@ hr{
   transition:transform .12s ease, box-shadow .2s ease, opacity .2s ease;
 }
 .btn:hover{transform:translateY(-1px); box-shadow:0 10px 24px rgba(0,0,0,.12); opacity:.96}
+
+.back-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:12px;
+  padding:.6rem 1rem;
+  font-size:.9rem;
+  font-weight:600;
+  color:#0d1230;
+  background:#fff;
+  border:1px solid var(--panel-bd);
+  border-radius:10px;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+  cursor:pointer;
+  transition:transform .12s ease, box-shadow .2s ease, opacity .2s ease;
+}
+.back-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 10px 24px rgba(0,0,0,.12);
+  opacity:.95;
+}
+
+.city h2 img.emoji{
+  width:1.2em;
+  height:1.2em;
+  vertical-align:-0.2em;
+}
+
+.city h2{
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+}
+.city h2 .flag{
+  display:inline-block;
+}
