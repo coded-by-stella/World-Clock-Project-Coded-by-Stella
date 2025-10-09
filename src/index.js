@@ -1,54 +1,94 @@
-function updateTime() {
-  // Los Angeles
-  let losAngelesElement = document.querySelector("#los-angeles");
-  if (losAngelesElement) {
-    let losAngelesDateElement = losAngelesElement.querySelector(".date");
-    let losAngelesTimeElement = losAngelesElement.querySelector(".time");
-    let losAngelesTime = moment().tz("America/Los_Angeles");
+let baseTimer = null;
+let selectedTimer = null;
 
-    losAngelesDateElement.innerHTML = losAngelesTime.format("MMMM	Do YYYY");
-    losAngelesTimeElement.innerHTML = losAngelesTime.format(
-      "h:mm:ss [<small>]A[</small>]"
-    );
+function formatDate(m) {
+  return m.format("MMMM Do YYYY");
+}
+function formatTime(m) {
+  return `${m.format("h:mm:ss")} <small>${m.format("A")}</small>`;
+}
+function lastSegmentName(tz) {
+  const parts = tz.split("/");
+  return (parts[parts.length - 1] || tz).replace(/_/g, " ");
+}
+
+function updateBaseTime() {
+  const la = document.querySelector("#los-angeles");
+  if (la) {
+    const m = moment().tz("America/Los_Angeles");
+    la.querySelector(".date").innerHTML = formatDate(m);
+    la.querySelector(".time").innerHTML = formatTime(m);
   }
-
-  // Paris
-  let parisElement = document.querySelector("#paris");
-  if (parisElement) {
-    let parisDateElement = parisElement.querySelector(".date");
-    let parisTimeElement = parisElement.querySelector(".time");
-    let parisTime = moment().tz("Europe/Paris");
-
-    parisDateElement.innerHTML = parisTime.format("MMMM	Do YYYY");
-    parisTimeElement.innerHTML = parisTime.format(
-      "h:mm:ss [<small>]A[</small>]"
-    );
+  const paris = document.querySelector("#paris");
+  if (paris) {
+    const m = moment().tz("Europe/Paris");
+    paris.querySelector(".date").innerHTML = formatDate(m);
+    paris.querySelector(".time").innerHTML = formatTime(m);
   }
 }
 
-function updateCity(event) {
-  let cityTimeZone = event.target.value;
-  if (cityTimeZone === "current") {
-    cityTimeZone = moment.tz.guess();
-  }
-  let cityName = cityTimeZone.replace("_", " ").split("/")[1];
-  let cityTime = moment().tz(cityTimeZone);
-  let citiesElement = document.querySelector("#cities");
-  citiesElement.innerHTML = `
-  <div class="city">
-    <div>
-      <h2>${cityName}</h2>
-      <div class="date">${cityTime.format("MMMM	Do YYYY")}</div>
+function startBaseTimer() {
+  if (baseTimer) clearInterval(baseTimer);
+  updateBaseTime();
+  baseTimer = setInterval(updateBaseTime, 1000);
+}
+
+function renderSelectedCity(tz) {
+  const name = lastSegmentName(tz);
+  const m = moment().tz(tz);
+  const wrap = document.querySelector("#cities");
+  wrap.innerHTML = `
+    <div class="city">
+      <div>
+        <h2>${name}</h2>
+        <div class="date">${formatDate(m)}</div>
+      </div>
+      <div class="time">${formatTime(m)}</div>
     </div>
-    <div class="time">${cityTime.format("h:mm:ss")} <small>${cityTime.format(
-    "A"
-  )}</small></div>
-  </div>
   `;
 }
 
-updateTime();
-setInterval(updateTime, 1000);
+function startSelectedTimer(tz) {
+  if (selectedTimer) clearInterval(selectedTimer);
+  renderSelectedCity(tz);
+  selectedTimer = setInterval(() => renderSelectedCity(tz), 1000);
+}
 
-let citiesSelectElement = document.querySelector("#city");
-citiesSelectElement.addEventListener("change", updateCity);
+function restoreBaseLayout() {
+  const wrap = document.querySelector("#cities");
+  wrap.innerHTML = `
+    <div class="city" id="los-angeles">
+      <div>
+        <h2>Los Angeles</h2>
+        <div class="date"></div>
+      </div>
+      <div class="time"></div>
+    </div>
+    <div class="city" id="paris">
+      <div>
+        <h2>Paris</h2>
+        <div class="date"></div>
+      </div>
+      <div class="time"></div>
+    </div>
+  `;
+}
+
+function handleSelectChange(e) {
+  const value = e.target.value;
+  if (!value) {
+    if (selectedTimer) clearInterval(selectedTimer);
+    restoreBaseLayout();
+    startBaseTimer();
+    return;
+  }
+  if (baseTimer) clearInterval(baseTimer);
+  let tz = value === "current" ? moment.tz.guess() : value;
+  startSelectedTimer(tz);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  startBaseTimer();
+  const sel = document.querySelector("#city");
+  if (sel) sel.addEventListener("change", handleSelectChange);
+});

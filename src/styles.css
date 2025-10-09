@@ -85,7 +85,26 @@ select{
 }
 .city + .city{margin-top:12px}
 .city .date{font-size:.95rem; color:var(--ink-soft)}
-.city .time{font-variant-numeric:tabular-nums; font-size:1.25rem; font-weight:700}
+.city .time{font-variant-numeric:tabular-nums; font-size:1.50rem; font-weight:700}
+
+.city:last-child {
+  border: none;
+}
+
+.date {
+  opacity: 0.7;
+}
+
+.time {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.time small {
+  font-size: 16px;
+  vertical-align: middle;
+  line-height: 48px;
+}
 
 /* Footer */
 footer .grid{
