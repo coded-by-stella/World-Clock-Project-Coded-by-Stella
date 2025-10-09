@@ -1,41 +1,61 @@
 let baseTimer = null;
 let selectedTimer = null;
 
+const baseCities = [
+  { id: "oslo", name: "Oslo", tz: "Europe/Oslo" },
+  { id: "tokyo", name: "Tokyo", tz: "Asia/Tokyo" },
+  { id: "rome", name: "Rome", tz: "Europe/Rome" },
+  { id: "sydney", name: "Sydney", tz: "Australia/Sydney" },
+  { id: "madrid", name: "Madrid", tz: "Europe/Madrid" },
+  { id: "new-york", name: "New York", tz: "America/New_York" },
+  { id: "berlin", name: "Berlin", tz: "Europe/Berlin" },
+  { id: "paris", name: "Paris", tz: "Europe/Paris" }
+];
+
 function formatDate(m) {
   return m.format("MMMM Do YYYY");
 }
 function formatTime(m) {
   return `${m.format("h:mm:ss")} <small>${m.format("A")}</small>`;
 }
-function lastSegmentName(tz) {
-  const parts = tz.split("/");
-  return (parts[parts.length - 1] || tz).replace(/_/g, " ");
+function nameFromTz(tz) {
+  return tz.split("/").pop().replace(/_/g, " ");
+}
+
+function renderBaseLayout() {
+  const wrap = document.querySelector("#cities");
+  wrap.innerHTML = baseCities.map(c => `
+    <div class="city" id="${c.id}">
+      <div>
+        <h2>${c.name}</h2>
+        <div class="date"></div>
+      </div>
+      <div class="time"></div>
+    </div>
+  `).join("");
 }
 
 function updateBaseTime() {
-  const la = document.querySelector("#los-angeles");
-  if (la) {
-    const m = moment().tz("America/Los_Angeles");
-    la.querySelector(".date").innerHTML = formatDate(m);
-    la.querySelector(".time").innerHTML = formatTime(m);
-  }
-  const paris = document.querySelector("#paris");
-  if (paris) {
-    const m = moment().tz("Europe/Paris");
-    paris.querySelector(".date").innerHTML = formatDate(m);
-    paris.querySelector(".time").innerHTML = formatTime(m);
-  }
+  baseCities.forEach(c => {
+    const el = document.querySelector(`#${c.id}`);
+    if (!el) return;
+    const m = moment().tz(c.tz);
+    el.querySelector(".date").innerHTML = formatDate(m);
+    el.querySelector(".time").innerHTML = formatTime(m);
+  });
 }
 
 function startBaseTimer() {
-  if (baseTimer) clearInterval(baseTimer);
+  if (selectedTimer) clearInterval(selectedTimer);
+  renderBaseLayout();
   updateBaseTime();
+  if (baseTimer) clearInterval(baseTimer);
   baseTimer = setInterval(updateBaseTime, 1000);
 }
 
 function renderSelectedCity(tz) {
-  const name = lastSegmentName(tz);
   const m = moment().tz(tz);
+  const name = nameFromTz(tz);
   const wrap = document.querySelector("#cities");
   wrap.innerHTML = `
     <div class="city">
@@ -49,41 +69,19 @@ function renderSelectedCity(tz) {
 }
 
 function startSelectedTimer(tz) {
+  if (baseTimer) clearInterval(baseTimer);
   if (selectedTimer) clearInterval(selectedTimer);
   renderSelectedCity(tz);
   selectedTimer = setInterval(() => renderSelectedCity(tz), 1000);
 }
 
-function restoreBaseLayout() {
-  const wrap = document.querySelector("#cities");
-  wrap.innerHTML = `
-    <div class="city" id="los-angeles">
-      <div>
-        <h2>Los Angeles</h2>
-        <div class="date"></div>
-      </div>
-      <div class="time"></div>
-    </div>
-    <div class="city" id="paris">
-      <div>
-        <h2>Paris</h2>
-        <div class="date"></div>
-      </div>
-      <div class="time"></div>
-    </div>
-  `;
-}
-
 function handleSelectChange(e) {
   const value = e.target.value;
   if (!value) {
-    if (selectedTimer) clearInterval(selectedTimer);
-    restoreBaseLayout();
     startBaseTimer();
     return;
   }
-  if (baseTimer) clearInterval(baseTimer);
-  let tz = value === "current" ? moment.tz.guess() : value;
+  const tz = value === "current" ? moment.tz.guess() : value;
   startSelectedTimer(tz);
 }
 
