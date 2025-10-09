@@ -1,40 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>World Clock - Coded_by_Stella</title>
-  <link rel="stylesheet" href="src/styles.css"/>
-</head>
-<body>
-   <div class="page container">
-    <h1>🌍World Clock🕒</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="src/styles.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.37/moment-timezone-with-data-1970-2030.min.js"></script>
+    <script src="src/index.js" defer></script>
 
-    <select>
-      <option value="">Select a city..</option>
-      <option value="">London</option>
-      <option value="">New York</option>
-      <option value="">Auckland</option>
-    </select>
+    <title>World Clock - Coded_by_Stella</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🌍World Clock🕒</h1>
 
-    <div class="city">
-      <h2>Los Angeles 🇺🇸</h2>
-      <div class="date">August 15th 2022</div>
-      <div class="time">1:48:15 AM</div>
+      <select id="city">
+        <option value="">Select a city..</option>
+        <option value="current">My current location</option>
+        <option value="Europe/London">London</option>
+        <option value="America/New_York">New York</option>
+        <option value="Pacific/Auckland">Auckland</option>
+      </select>
+
+      <div id="cities">
+        <div class="city" id="los-angeles">
+          <div>
+            <h2>Los Angeles</h2>
+            <div class="date"></div>
+          </div>
+          <div class="time"></div>
+        </div>
+        <div class="city" id="paris">
+          <div>
+            <h2>Paris</h2>
+            <div class="date"></div>
+          </div>
+          <div class="time"></div>
+        </div>
+      </div>
     </div>
-
-    <div class="city">
-      <h2>Sydney 🇦🇺</h2>
-      <div class="date">August 15th 2022</div>
-      <div class="time">1:48:15 AM</div>
-    </div>
-  </div>
-
-
 
   <footer class="section section--panel" aria-labelledby="footer-title">
   <div class="container">
-    <h2 id="footer-title" class="overline">Let’s build your success together!</h2>
+    <h2 id="footer-title" class="overline">Let’s build your success together!🙌🏻</h2>
 <br />
     <div class="grid">
 
